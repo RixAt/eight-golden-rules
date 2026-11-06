@@ -1,6 +1,6 @@
 {
   "scripts":{
-    "start": "node --env-file=.env database.js"
+    "start": "node --env-file=.env src/server.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",

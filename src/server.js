@@ -1,4 +1,4 @@
-var mysql = require('mysql2');
+const db = require('./db');
 var express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -7,33 +7,21 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-var con = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
-
-con.connect(function (err) {
-    if (err) throw err;
-    console.log("Connected!");
-});
-
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname,'pages',"index.html"));
+    res.sendFile(path.join(__dirname, '..', 'pages', "index.html"));
 });
 
 app.get("/index.html", function (req, res) {
-    res.sendFile(path.join(__dirname,'pages',"index.html"));
+    res.sendFile(path.join(__dirname, '..', 'pages',"index.html"));
 });
 
 app.get("/login.html", function (req, res) {
-    res.sendFile(path.join(__dirname,'pages',"login.html"));
+    res.sendFile(path.join(__dirname, '..', 'pages',"login.html"));
 });
 
 app.post("/login.html", function (req, res) {
@@ -49,7 +37,7 @@ app.post("/login.html", function (req, res) {
 
     if(!buttonFlag){
     var sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    con.query(sql, [username, password], function (err, result) {
+    db.query(sql, [username, password], function (err, result) {
         if (err) throw err;
         if (result.length > 0) {
             idValue = result[0].id;
@@ -59,7 +47,7 @@ app.post("/login.html", function (req, res) {
     }
     else{
         var sql = 'INSERT INTO users(username, password) values( ? , ? )';
-    con.query(sql, [username, password], function (err) {
+    db.query(sql, [username, password], function (err) {
         if (err) throw err;
     });
     }
@@ -72,18 +60,18 @@ app.post("/login.html", function (req, res) {
 });
 
 app.get("/Examples.html", function (req, res) {
-    res.sendFile(path.join(__dirname,'pages',"Examples.html"));
+    res.sendFile(path.join(__dirname, '..', 'pages',"Examples.html"));
 });
 
 app.get("/rules.html", function (req, res) {
-    res.sendFile(path.join(__dirname,'pages',"rules.html"));
+    res.sendFile(path.join(__dirname, '..', 'pages',"rules.html"));
 });
 
 app.get("/quiz.html", function (req, res) {
     let score = -1;
 
     var sql = 'SELECT * FROM scores WHERE id = ?';
-    con.query(sql, [req.cookies.userId], function (err, result) {
+    db.query(sql, [req.cookies.userId], function (err, result) {
         if (err) throw err;
         if (result.length > 0) {
             score = result[0].score;
@@ -94,7 +82,7 @@ app.get("/quiz.html", function (req, res) {
 
     setTimeout(function () {
         res.cookie('userScore', score, { maxAge: 1000 });
-        res.sendFile(path.join(__dirname,'pages',"quiz.html"));
+        res.sendFile(path.join(__dirname, '..', 'pages',"quiz.html"));
     }, 250);
     
 });
@@ -102,7 +90,7 @@ app.get("/quiz.html", function (req, res) {
 app.post("/quiz.html", function (req, res) {
     if (req.cookies.userId && req.cookies.userId != -1) {
         var sql = 'INSERT INTO scores (id, score) VALUES (?, ?)';
-        con.query(sql, [req.cookies.userId, req.body.quizScore], function (err, result) {
+        db.query(sql, [req.cookies.userId, req.body.quizScore], function (err, result) {
             if (err) throw err;
         });
     }
@@ -111,11 +99,11 @@ app.post("/quiz.html", function (req, res) {
 });
 
 app.get("/team.html", function (req, res) {
-    res.sendFile(path.join(__dirname,'pages',"team.html"));
+    res.sendFile(path.join(__dirname, '..', 'pages',"team.html"));
 });
 
 app.get("/contact.html", function (req, res) {
-    res.sendFile(path.join(__dirname,'pages',"contact.html"));
+    res.sendFile(path.join(__dirname, '..', 'pages',"contact.html"));
 });
 
 // Start the server
