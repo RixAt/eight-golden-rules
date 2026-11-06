@@ -5,11 +5,13 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+const PORT = process.env.PORT || 3000
+
 var con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "mydb"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 con.connect(function (err) {
@@ -121,6 +123,6 @@ app.get("/contact.html", function (req, res) {
 });
 
 // Start the server
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+app.listen(PORT, () => {
+    console.log('Server is running on port ${PORT}');
 });
