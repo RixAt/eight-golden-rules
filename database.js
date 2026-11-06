@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
 var con = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -21,19 +21,19 @@ con.connect(function (err) {
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.static("public"));
+app.use(express.urlencoded({extended:true}));
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get("", function (req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
+app.get("/", function (req, res) {
+    res.sendFile(path.join(__dirname,'pages',"index.html"));
 });
 
 app.get("/index.html", function (req, res) {
-    res.sendFile(__dirname + "/" + "index.html");
+    res.sendFile(path.join(__dirname,'pages',"index.html"));
 });
 
 app.get("/login.html", function (req, res) {
-    res.sendFile(__dirname + "/" + "login.html");
+    res.sendFile(path.join(__dirname,'pages',"login.html"));
 });
 
 app.post("/login.html", function (req, res) {
@@ -72,11 +72,11 @@ app.post("/login.html", function (req, res) {
 });
 
 app.get("/Examples.html", function (req, res) {
-    res.sendFile(__dirname + "/" + "Examples.html");
+    res.sendFile(path.join(__dirname,'pages',"Examples.html"));
 });
 
 app.get("/rules.html", function (req, res) {
-    res.sendFile(__dirname + "/" + "rules.html");
+    res.sendFile(path.join(__dirname,'pages',"rules.html"));
 });
 
 app.get("/quiz.html", function (req, res) {
@@ -94,7 +94,7 @@ app.get("/quiz.html", function (req, res) {
 
     setTimeout(function () {
         res.cookie('userScore', score, { maxAge: 1000 });
-        res.sendFile(__dirname + "/" + "quiz.html");
+        res.sendFile(path.join(__dirname,'pages',"quiz.html"));
     }, 250);
     
 });
@@ -110,16 +110,12 @@ app.post("/quiz.html", function (req, res) {
     res.redirect("/" + "quiz.html");
 });
 
-app.get("/rules.html", function (req, res) {
-    res.sendFile(__dirname + "/" + "rules.html");
-});
-
 app.get("/team.html", function (req, res) {
-    res.sendFile(__dirname + "/" + "team.html");
+    res.sendFile(path.join(__dirname,'pages',"team.html"));
 });
 
 app.get("/contact.html", function (req, res) {
-    res.sendFile(__dirname + "/" + "contact.html");
+    res.sendFile(path.join(__dirname,'pages',"contact.html"));
 });
 
 // Start the server
